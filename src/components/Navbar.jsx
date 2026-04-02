@@ -13,8 +13,6 @@ import { FiCreditCard } from "react-icons/fi";
 import { CiLocationOn } from "react-icons/ci";
 import { FiEdit } from "react-icons/fi";
 import { FiXCircle } from "react-icons/fi";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
 import React from "react";
 import axios from "axios";
@@ -162,7 +160,6 @@ export function Navbar({ toggleSidebar, isCollapsed }) {
         mobileNo: user.mobileNo || "",
         email: user.email || "",
         address: user.address || "",
-        aadharCardNo: user.aadharCardNo || "",
       });
       setNewProfilePic(null);
       setPreviewUrl(null);
@@ -190,8 +187,31 @@ export function Navbar({ toggleSidebar, isCollapsed }) {
     if (fileInputRef.current) fileInputRef.current.value = null;
   };
 
+  const validateProfile = (data) => {
+
+  if (!/^\d{10}$/.test(data.mobileNo)) {
+    return "Mobile number must be exactly 10 digits";
+  }
+
+  // basic email check
+  if (!/^\S+@\S+\.\S+$/.test(data.email)) {
+    return "Enter valid email";
+  }
+
+  return null; // no error
+};
+
   const handleSave = async () => {
-    setIsSaving(true);
+
+
+    const validationError = validateProfile(editForm);
+
+      if (validationError) {
+    showToast({ type: "error", message: validationError });
+    return;
+  }
+
+      setIsSaving(true);
     // console.log("Uploading image...", newProfilePic);
 
     try {
@@ -269,20 +289,6 @@ export function Navbar({ toggleSidebar, isCollapsed }) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-
-              {/* Logo: navbar*/}
-              <Link to="/dashboard" className="flex items-center gap-2">
-                <img
-                  src="/logo.png"
-                  alt="Loan Admin Logo"
-                  className="h-9 w-auto rounded-lg object-contain bg-gradient-to-br from-orange-500 to-orange-600 flex item shadow-md">
-
-                </img>
-                {/* Full name optional - in mobile small view */}
-                <span className="text-xl font-bold text-orange-600 tracking-tight hidden">
-                  LoanAdmin
-                </span>
-              </Link>
             </div>
 
             {/* Right: Notification + Profile + Logout */}
@@ -456,32 +462,6 @@ export function Navbar({ toggleSidebar, isCollapsed }) {
                       )}
                     </div>
                   ))}
-
-                  {/* Aadhar Row - Non editable for safety */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm gap-2 sm:text-center">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-100 text-blue-600 rounded-lg shrink-0">
-                        <FiCreditCard className="w-5 h-5" />
-                      </div>
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">
-                        Aadhar Number
-                      </span>
-                    </div>
-
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="aadharCardNo"
-                        value={editForm.aadharCardNo}
-                        onChange={handleChange}
-                        className="text-sm font-bold text-gray-900 bg-orange-50/50 border border-orange-200 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-orange-400 w-full sm:w-auto sm:text-right"
-                      />
-                    ) : (
-                      <span className="text-sm font-bold text-gray-800">
-                        {user?.aadharCardNo || "Not available"}
-                      </span>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>

@@ -10,19 +10,18 @@ import { useDispatch } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
 import { FiLogOut } from "react-icons/fi";
 import { logout } from "../store/authSlice";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+import { PiClockCounterClockwise } from "react-icons/pi";
+import { CiSettings } from "react-icons/ci";
 
 const menuItems = [
   { name: "Dashboard", path: "/dashboard", icon: <MdOutlineDashboardCustomize /> },
   { name: "Plans", path: "/plans", icon: <MdOutlineSubscriptions /> },
   { name: "Revenue", path: "/revenue", icon: <FiDollarSign /> },
   { name: "Lenders", path: "/lenders", icon: <FiUsers /> },
-  { name: "Help & Support", path: "/support", icon: <IoIosHelpCircleOutline className="h-5.5 w-5.5 stroke-[1]"/> },
-  { name: "Privacy & Security", path: "/security", icon: <FiShield /> },
-  {
-    name: "Change Password", path: "/password", icon: <CiLock className="h-5.5 w-5.5 stroke-[0.5]"/>
-  },
+  { name: "Activity", path: "/activityDetails", icon: <PiClockCounterClockwise />},
+  { name: "Support", path: "/support", icon: <IoIosHelpCircleOutline className="h-5.5 w-5.5 stroke-[1]" /> },
+  { name: "Security", path: "/security", icon: <FiShield /> },
+  { name: "Settings", path: "/password", icon: <CiSettings className="h-5.5 w-5.5" /> },
 ];
 
 
@@ -47,7 +46,7 @@ const ToastIcons = {
 
 const toastStyles = {
   success: { icon: "bg-green-100 text-green-700", bar: "bg-green-500" },
-  error:   { icon: "bg-red-100   text-red-700",   bar: "bg-red-500"   },
+  error: { icon: "bg-red-100   text-red-700", bar: "bg-red-500" },
 };
 
 function ToastItem({ id, type, message, duration = 4000, onRemove }) {
@@ -135,7 +134,7 @@ export default function Sidebar({
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const {toasts, showToast, removeToast} = useToast();
+  const { toasts, showToast, removeToast } = useToast();
 
 
   return (
@@ -152,7 +151,7 @@ export default function Sidebar({
       <aside
         className={`
     fixed inset-y-0 left-0 z-50 bg-white border-r border-orange-100
-    shadow-xl
+    shadow-xl overflow-visible
     
     ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
     ${isCollapsed ? "lg:w-20" : "lg:w-72"}
@@ -160,15 +159,87 @@ export default function Sidebar({
   `}
       >
 
-       
+
         <div className="h-full flex flex-col">
           {/* Header / Logo */}
-          <div className="p-6 border-b border-orange-100 flex items-center justify-between">
-            {!isCollapsed && (
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent tracking-tight">
-                LoanAdmin
-              </h2>
-            )}
+
+          <div className={`border-b border-orange-100 flex items-center
+           ${isCollapsed
+              ? "justify-center p-3"
+              : "justify-between px-5 py-4"
+            }`}>
+
+       {isCollapsed ? (
+  // ── Collapsed: orange gradient LH icon ──
+  <div className="relative flex-shrink-0">
+    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md">
+      <span style={{
+        fontFamily: "system-ui, sans-serif",
+        fontSize: "14px",
+        fontWeight: 900,
+        color: "white",
+        letterSpacing: "-1px",
+        lineHeight: 1,
+      }}>LH</span>
+    </div>
+    {/* White dot accent */}
+    <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-white rounded-full border-2 border-orange-500" />
+  </div>
+
+) : (
+  // ── Expanded: full LoanHub logo ──
+  <div className="flex items-center gap-3">
+    {/* Icon */}
+    <div className="relative flex-shrink-0">
+      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md">
+        <span style={{
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "14px",
+          fontWeight: 900,
+          color: "white",
+          letterSpacing: "-1px",
+          lineHeight: 1,
+        }}>LH</span>
+      </div>
+      {/* White dot accent */}
+      <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-white rounded-full border-2 border-orange-500" />
+    </div>
+
+    {/* Text */}
+    <div>
+      <p style={{ margin: 0, lineHeight: 1.2 }}>
+        <span style={{
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "17px",
+          fontWeight: 900,
+          letterSpacing: "-0.5px",
+          background: "linear-gradient(135deg, #f97316, #ea580c)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}>Loan</span>
+        <span style={{
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "17px",
+          fontWeight: 900,
+          letterSpacing: "-0.5px",
+          color: "#0f172a",
+        }}>Hub</span>
+      </p>
+      <p style={{
+        fontFamily: "system-ui, sans-serif",
+        fontSize: "8px",
+        fontWeight: 600,
+        color: "#f97316",
+        letterSpacing: "2.5px",
+        margin: 0,
+        opacity: 0.8,
+      }}>LENDING PLATFORM</p>
+    </div>
+  </div>
+)}
+
+            {/* Mobile close button */}
             <button
               onClick={() => setIsMobileOpen(false)}
               className="lg:hidden text-gray-500 hover:text-orange-600 transition-colors"
@@ -187,28 +258,43 @@ export default function Sidebar({
                 to={item.path}
                 onClick={() => setIsMobileOpen(false)}
                 className={`
-                  group flex items-center rounded-xl 
-                  ${isCollapsed ? "justify-center py-4" : "px-4 py-3 gap-3"}
-                  ${location.pathname === item.path
+        group flex relative items-center rounded-xl 
+        ${isCollapsed ? "justify-center py-4" : "px-4 py-3 gap-3"}
+        ${location.pathname === item.path
                     ? "bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 font-medium shadow-sm"
                     : "text-gray-700 hover:bg-orange-50 hover:text-orange-700"
                   }
-                `}
+      `}
               >
-                <span
-                  className={`
-                    text-xl transition-colors
-                    ${location.pathname === item.path ? "text-orange-600" : "text-gray-500 group-hover:text-orange-600"}
-                  `}
-                >
+                {/* Tooltip */}
+                {isCollapsed && (
+                  <span
+                    className="
+             fixed
+             left-[60px]
+            
+             translate-x-2
+    bg-gray-900 text-white text-xs font-medium
+    px-3 py-1.5 rounded-md shadow-lg
+    whitespace-nowrap
+    opacity-0 group-hover:opacity-100
+    transition-all duration-200 ease-out
+    pointer-events-none z-[9999]
+          "
+
+                  >
+
+                    {item.name}
+                  </span>
+                )}
+
+                {/* Icon */}
+                <span className={`text-xl transition-colors ${location.pathname === item.path ? "text-orange-600" : "text-gray-500 group-hover:text-orange-600"}`}>
                   {item.icon}
                 </span>
-                <span
-                  className={`
-                  text-sm font-medium
-                  ${isCollapsed ? "lg:hidden" : "block"}
-                  `}
-                >
+
+                {/* Text */}
+                <span className={`text-sm font-medium ${isCollapsed ? "lg:hidden" : "block"}`}>
                   {item.name}
                 </span>
               </Link>
@@ -244,59 +330,59 @@ export default function Sidebar({
         </div>
       </aside>
       {showLogoutConfirm && (
-  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-orange-100">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-orange-100">
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-6 py-5 border-b border-orange-200">
-        <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-          <FiLogOut className="w-6 h-6 text-orange-600" />
-          Confirm Logout
-        </h3>
-      </div>
+            {/* Header */}
+            <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-6 py-5 border-b border-orange-200">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+                <FiLogOut className="w-6 h-6 text-orange-600" />
+                Confirm Logout
+              </h3>
+            </div>
 
-      {/* Body */}
-      <div className="p-6 space-y-4">
-        <p className="text-gray-700 text-center">
-          Are you sure you want to logout?
-        </p>
-        <p className="text-sm text-gray-500 text-center">
-          You'll need to sign in again to access your account.
-        </p>
-      </div>
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              <p className="text-gray-700 text-center">
+                Are you sure you want to logout?
+              </p>
+              <p className="text-sm text-gray-500 text-center">
+                You'll need to sign in again to access your account.
+              </p>
+            </div>
 
-      {/* Buttons */}
-      <div className="flex items-center gap-4 px-6 py-5 border-t border-gray-200 bg-gray-50">
-        <button
-          onClick={() => setShowLogoutConfirm(false)}
-          className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-xl transition-all cursor-pointer"
-        >
-          No, Cancel
-        </button>
+            {/* Buttons */}
+            <div className="flex items-center gap-4 px-6 py-5 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-xl transition-all cursor-pointer"
+              >
+                No, Cancel
+              </button>
 
-        <button
-          onClick={() => {
-            setShowLogoutConfirm(false);
-             showToast({ type: "success", message: "Logout successfully!" });
-            setTimeout(() => {
-              dispatch(logout());
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              navigate("/");
-            }, 1500); 
-          }}
-          className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl shadow-md transition-all cursor-pointer"
-        >
-          Yes, Logout
-        </button>
-      </div>
+              <button
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  showToast({ type: "success", message: "Logout successfully!" });
+                  setTimeout(() => {
+                    dispatch(logout());
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    navigate("/");
+                  }, 1500);
+                }}
+                className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl shadow-md transition-all cursor-pointer"
+              >
+                Yes, Logout
+              </button>
+            </div>
 
-    </div>
-  </div>
-)}
+          </div>
+        </div>
+      )}
 
-   {/* toast */}
-   <ToastContainer toasts={toasts} onRemove={removeToast}/>
+      {/* toast */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </>
   );
 }

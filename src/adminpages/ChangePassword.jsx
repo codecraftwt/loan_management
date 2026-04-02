@@ -179,6 +179,7 @@ export function ChangePassword() {
 
  return (
     <>
+    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
       {/* Toast */}
       <ToastContainer toasts={toasts} onRemove={removeToast}/>
 
@@ -356,6 +357,7 @@ export function ChangePassword() {
           </div>
 
         </div>
+      </div>
       </div>
       </div>
     </>

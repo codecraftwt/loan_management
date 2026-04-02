@@ -18,6 +18,8 @@ import { ForgotPasswordOTP } from './adminpages/ForgotPasswordOTP'
 import { ForgotPasswordReset } from './adminpages/ForgotPasswordReset'
 import { PlanDetails } from './adminpages/PlanDetails'
 import PrivateRoute from './components/PrivateRoute'
+import ScrollToTop from './layouts/ScrollToTop'
+import { ActivityDetails } from './adminpages/ActivityDetails'
 
 
 
@@ -26,6 +28,7 @@ function App() {
 
   return (
     <>
+    <ScrollToTop/>
     <Routes>
      <Route path='/' element={<Login/>}></Route>  
       <Route path='/signup' element={<Signup/>}></Route>
@@ -46,6 +49,7 @@ function App() {
           <Route path="/support" element={<HelpSupport />} />
           <Route path="/security" element={<PrivacySecurity />} />
           <Route path="/password" element={<ChangePassword />} />
+          <Route path='/activityDetails' element={<ActivityDetails/>}/>
           {/*admin pages add here */}
         </Route>
         </Route>

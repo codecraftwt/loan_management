@@ -11,8 +11,11 @@ export default function AdminLayout({ children }) {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
         setIsMobileOpen(false);
+        setIsCollapsed(false);
       }
     };
+
+    handleResize();
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

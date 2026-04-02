@@ -27,11 +27,11 @@ export function Lenders() {
     const itemsPerPage = 4;
 
 
- 
 
-useEffect(() => {
-  setCurrentPage(1);
-}, [searchQuery, planStatusFilter]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, planStatusFilter]);
 
 
 
@@ -51,9 +51,9 @@ useEffect(() => {
 
     if (isLoading && lenders.length === 0) {
         return (
-            <div className="flex justify-center items-center py-20">
+            <div className="flex justify-center items-center h-[60vh] bg-gray-50">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500 border-solid"></div>
-                <span className="ml-4 text-lg text-gray-600 font-medium">Loading lenders data...</span>
+                <span className="ml-4 text-lg text-gray-600 font-medium">Loading Lenders Data...</span>
             </div>
         );
     }
@@ -83,12 +83,12 @@ useEffect(() => {
         return true;
     });
 
-       // Pagination logic
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentLenders = statusFilteredLenders.slice(indexOfFirstItem, indexOfLastItem);
+    // Pagination logic
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentLenders = statusFilteredLenders.slice(indexOfFirstItem, indexOfLastItem);
 
-const totalPages = Math.ceil(statusFilteredLenders.length / itemsPerPage);
+    const totalPages = Math.ceil(statusFilteredLenders.length / itemsPerPage);
 
     // Stats calculation (redux se direct)
     const totalLenders = lenders.length;
@@ -97,8 +97,10 @@ const totalPages = Math.ceil(statusFilteredLenders.length / itemsPerPage);
 
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
-            <div className="mb-6 md:mb-8 text-center sm:text-left">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Lenders with Plans</h1>
+             
+           
+            <div className="flex items-center justify-between">
+                <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">Lenders with Plans</h1>
             </div>
 
             {/* Search Bar */}
@@ -208,9 +210,9 @@ const totalPages = Math.ceil(statusFilteredLenders.length / itemsPerPage);
             )}
 
 
-
-            {/* Stats White Card - Search bar ke niche */}
-            <div className="mb-8 bg-white rounded-2xl border border-orange-100 shadow-sm p-6 max-w-5xl mx-auto">
+         
+            {/* Stats White Card  */}
+            <div className="mb-8 bg-white rounded-2xl border border-orange-100 shadow-sm p-6 w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
                     {/* Total Lenders */}
                     <div className="py-2 sm:py-0 text-center">
@@ -238,8 +240,9 @@ const totalPages = Math.ceil(statusFilteredLenders.length / itemsPerPage);
                     </div>
                 </div>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 max-w-6xl mx-auto">
+             
+             
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 w-full">
                 {currentLenders.length > 0 ? (
                     currentLenders.map((lender) => {
                         return (
@@ -350,18 +353,40 @@ const totalPages = Math.ceil(statusFilteredLenders.length / itemsPerPage);
                 )}
             </div>
             {totalPages > 1 && (
-  <div className="flex justify-center items-center gap-2 mt-6">
-    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-      <button
-        key={page}
-        onClick={() => setCurrentPage(page)}
-        className={`px-3 py-1 rounded-lg text-sm font-medium ${page === currentPage ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
-      >
-        {page}
-      </button>
-    ))}
-  </div>
-)}
-        </div>
+                <div className="flex justify-center items-center gap-2 mt-10 flex-wrap">
+
+                    <button
+                        onClick={() => setCurrentPage((prev) => prev - 1)}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 cursor-pointer"
+                    >
+                        Prev
+                    </button>
+
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`px-4 py-2 rounded-lg ${currentPage === i + 1
+                                    ? "bg-orange-600 text-white"
+                                    : "bg-gray-100"
+                                }`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+
+                    <button
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 cursor-pointer"
+                    >
+                        Next
+                    </button>
+
+                </div>
+            )}
+            </div>
+        
     );
 }

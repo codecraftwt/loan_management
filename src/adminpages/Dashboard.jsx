@@ -18,7 +18,7 @@ export default function Dashboard() {
 
 
   const dispatch = useDispatch();
-  const { revenue, activities, isLoading, error, lastFetched } = useSelector(state => state.dashboard);
+  const { revenue, dashboardActivities, isLoading, error, lastFetched } = useSelector(state => state.dashboard);
 
   // User data from auth slice (login ke time save hua hai)
   const { user } = useSelector(state => state.auth);
@@ -33,7 +33,7 @@ export default function Dashboard() {
 
     if (shouldRefetch) {
       dispatch(fetchRevenue());
-      dispatch(fetchRecentActivities());
+      dispatch(fetchRecentActivities(5));
     }
 
   }, [dispatch, lastFetched]);
@@ -47,9 +47,9 @@ export default function Dashboard() {
 
   if (isLoading && !revenue) {           // show spinner only on first load
     return (
-      <div className="flex justify-center items-center py-20">
+      <div className="flex items-center justify-center h-[60vh] bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500 border-solid"></div>
-        <span className="ml-4 text-lg text-gray-600 font-medium">Loading revenue data & activities...</span>
+        <span className="ml-4 text-lg text-gray-600 font-medium">Loading Revenue Data & Activities...</span>
       </div>
     );
   }
@@ -108,6 +108,7 @@ export default function Dashboard() {
 
   return (
     <>
+    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
       {/* Welcome back Card */}
       <div className="mb-10">
          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
@@ -169,7 +170,7 @@ export default function Dashboard() {
 
           {/* Right Card - Lender List (Faint Red) */}
           <div
-            onClick={() => navigate('/lenders')} // ya jo route hai lender list ka
+            onClick={() => navigate('/lenders')} 
             className="bg-gradient-to-br from-rose-200 to-rose-300 rounded-2xl shadow-lg p-6 md:p-8 cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-between border border-red-200 group"
           >
             <div>
@@ -185,9 +186,16 @@ export default function Dashboard() {
 
       {/* Revenue Overview Section */}
       <div className="mb-10">
+      <div className="flex items-center justify-between">
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
           Revenue Overview
         </h2>
+
+        <button className="text-sm font-semibold text-orange-600 hover:text-orange-700 transition flex items-center gap-1 cursor-pointer"
+         onClick={()=> navigate("/revenue")}>
+          View Details
+        </button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
             <div
@@ -214,17 +222,24 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
-      </div>
+        </div>
+    
 
-      {/* Recent Activity - Full Width */}
       <div className="mb-10">
+      {/* Recent Activity - Full Width */}
+      <div className="flex items-center justify-between">
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
           Recent Activity
         </h2>
+        <button className="text-sm font-semibold text-orange-600 hover:text-orange-700 transition flex items-center gap-1 cursor-pointer"
+        onClick={()=>navigate("/activityDetails")}>
+          See All
+        </button>
+        </div>
         <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-6">
-          {activities.length > 0 ? (
+          {dashboardActivities.length > 0 ? (
             <div className="space-y-4">
-              {activities.map((activity, i) => {
+              {dashboardActivities.map((activity, i) => {
                 const type = activity.type?.toLowerCase() || "";
 
                 // Har type ke liye alag color + background + icon
@@ -290,7 +305,7 @@ export default function Dashboard() {
 
 
                     {/* Faint divider line between activities */}
-                    {i < activities.length - 1 && (
+                    {i < dashboardActivities.length - 1 && (
                       <div className="mx-4 mt-2 border-t border-gray-200"></div>
                     )}
                   </div>
@@ -305,7 +320,9 @@ export default function Dashboard() {
             </div>
           )}
         </div>
-      </div>
+        </div>
+        </div>
+     
     </>
   );
 }

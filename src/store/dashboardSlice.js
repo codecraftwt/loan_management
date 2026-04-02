@@ -30,16 +30,19 @@ export const fetchRevenue = createAsyncThunk(
 
 export const fetchRecentActivities = createAsyncThunk(
   'dashboard/fetchRecentActivities',
-  async (_, { getState, rejectWithValue }) => {
+  async (limit = 10, { getState, rejectWithValue }) => {
     try {
       const token = getState().auth.token || localStorage.getItem('token');
       if (!token) {
         return rejectWithValue('No authentication token');
       }
 
-      const res = await axios.get(`${BASE_URL}/admin/recent-activities?limit=10`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.get(
+        `${BASE_URL}/admin/recent-activities?limit=${limit}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
       if (!res.data?.success) {
         throw new Error('API returned unsuccessful');
@@ -47,7 +50,9 @@ export const fetchRecentActivities = createAsyncThunk(
 
       return res.data.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || err.message || 'Failed to fetch activities');
+      return rejectWithValue(
+        err.response?.data?.message || err.message || 'Failed to fetch activities'
+      );
     }
   }
 );
@@ -57,7 +62,8 @@ export const fetchRecentActivities = createAsyncThunk(
 
 const initialState = {
   revenue: null,
-  activities: [],
+  dashboardActivities: [], //5
+  allActivities: [], //10
   isLoading: false,
   error: null,
   lastFetched: null
@@ -92,7 +98,14 @@ const dashboardSlice = createSlice({
       })
       .addCase(fetchRecentActivities.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.activities = action.payload;
+
+        const limit = action.meta.arg;
+        if(limit === 5) {
+          state.dashboardActivities = action.payload;
+        }else{
+          state.allActivities = action.payload;
+        }
+    
       })
       .addCase(fetchRecentActivities.rejected, (state, action) => {
         state.isLoading = false;

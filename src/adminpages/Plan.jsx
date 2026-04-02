@@ -7,6 +7,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { MdDeleteOutline } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
+import { IoIosSearch } from "react-icons/io";
+import { FiFilter } from "react-icons/fi";
 
 
 // ─── Toast Icons ─────────────────────────────────────────────
@@ -36,8 +38,8 @@ const ToastIcons = {
 
 const toastStyles = {
   create: { icon: "bg-green-100 text-green-700", bar: "bg-green-500" },
-  update: { icon: "bg-blue-100  text-blue-700",  bar: "bg-blue-500"  },
-  delete: { icon: "bg-red-100   text-red-700",   bar: "bg-red-500"   },
+  update: { icon: "bg-blue-100  text-blue-700", bar: "bg-blue-500" },
+  delete: { icon: "bg-red-100   text-red-700", bar: "bg-red-500" },
 };
 
 // ─── Toast Item ───────────────────────────────────────────────
@@ -68,7 +70,7 @@ function ToastItem({ id, action, message, duration = 4000, onRemove }) {
         <p className="text-xs text-gray-500 mt-0.5">
           {action === "create" ? "New plan has been added."
             : action === "update" ? "Plan details have been saved."
-            : "Plan has been permanently removed."}
+              : "Plan has been permanently removed."}
         </p>
       </div>
       <button onClick={dismiss}
@@ -120,10 +122,10 @@ function useToast() {
 
 export function Plan() {
   const dispatch = useDispatch();
-  const { plans, isLoading, isCreating, error } = useSelector((state) => state.plans || {});
+  const { plans, isLoading, isCreating, isUpdating, error } = useSelector((state) => state.plans || {});
 
 
-const { toasts, showToast, removeToast } = useToast();
+  const { toasts, showToast, removeToast } = useToast();
 
   const [formData, setFormData] = useState({
     planName: '',
@@ -144,6 +146,9 @@ const { toasts, showToast, removeToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
+  //search bar state
+  const [searchQuery, setSearchQuery] = useState("");
+
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
   const plansPerPage = 6;
@@ -151,9 +156,22 @@ const { toasts, showToast, removeToast } = useToast();
 
   const indexOfLastPlan = currentPage * plansPerPage;
   const indexOfFirstPlan = indexOfLastPlan - plansPerPage;
-  const currentPlans = plans.slice(indexOfFirstPlan, indexOfLastPlan);
 
-  const totalPages = Math.ceil(plans.length / plansPerPage);
+
+  const filteredPlans = plans.filter((plan) => {
+    const query = searchQuery.toLowerCase();
+
+    return (
+      plan.planName?.toLowerCase().includes(query) ||
+      plan.description?.toLowerCase().includes(query) ||
+      plan.duration?.toLowerCase().includes(query) ||
+      String(plan.priceMonthly)?.includes(query)
+    );
+  });
+
+  const totalPages = Math.ceil(filteredPlans.length / plansPerPage);
+
+  const currentPlans = filteredPlans.slice(indexOfFirstPlan, indexOfLastPlan)
 
   // Check if navigated from Dashboard with openModal state
   useEffect(() => {
@@ -230,20 +248,47 @@ const { toasts, showToast, removeToast } = useToast();
       setFormError("Plan Name is required");
       return;
     }
-    
-    
-    if(!formData.duration) {
+
+
+    if (!formData.duration) {
       setFormError("Duration is required");
       return;
     }
 
-    if(!formData.priceMonthly) {
+    if (!formData.priceMonthly) {
       setFormError("Monthly Price is required");
+      return;
+    }
+
+    if (Number(formData.priceMonthly) < 99) {
+      setFormError("Minimum plan price should be ₹ 99");
+      return;
+    }
+
+    if (Number(formData.priceMonthly) > 999999) {
+      setFormError("Price should not exceed ₹ 9,99,999");
       return;
     }
 
     if (!formData.priceMonthly || Number(formData.priceMonthly) <= 0) {
       setFormError("Monthly Price must be a positive number");
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setFormError("Description is required");
+      return;
+    }
+
+    // atleast
+    if (formData.description.trim().length < 5) {
+      setFormError("Description must be at least 10 characters");
+      return;
+    }
+
+    //maximum
+    if (formData.description.trim().length > 200) {
+      setFormError("Description cannot exceed 200 characters");
       return;
     }
 
@@ -314,14 +359,29 @@ const { toasts, showToast, removeToast } = useToast();
     navigate(`/plans/${planId}`);
   }
 
+  if (isLoading) {
+  return (
+    <div className="flex items-center justify-center h-[60vh] bg-gray-50">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500"></div>
+      <span className="ml-4 text-lg text-gray-600 font-medium">
+        Loading Plans...
+      </span>
+    </div>
+  );
+}
+
 
   return (
-    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
-       <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
-          Plan Management
-        </h2>
+    <div className="relative p-4 md:p-6 bg-gray-50 min-h-screen">
+      
+  
+      <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+        Plan Management
+      </h2>
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 items-start sm:items-center gap-4 ">
         <h1 className="text-xl md:text-2xl font-bold text-gray-900">All Plans</h1>
+
+
 
         {/* Top Right + Add Plan Button */}
         <button
@@ -332,10 +392,35 @@ const { toasts, showToast, removeToast } = useToast();
           Create Plan
         </button>
       </div>
+      {/* Search Bar */}
+      <div className="mb-6 flex items-center gap-3 bg-white rounded-xl border border-orange-100 shadow-sm p-3 max-w-4xl mx-auto">
+        <IoIosSearch className="w-4 h-4 text-gray-500 flex-shrink-0" />
+
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+
+          placeholder="Search by plan name, description, or price"
+          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+        />
+
+        <div className="h-6 w-[1px] bg-gray-200 hidden sm:block"></div>
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="flex items-center gap-2 text-orange-500 hover:text-orange-600 transition-colors flex-shrink-0 px-1"
+        >
+
+          <FiFilter className="w-5 h-5 cursor-pointer" />
+        </button>
+      </div>
 
       {/* popup message including add,update,delete,edit*/}
-       <ToastContainer toasts={toasts} onRemove={removeToast} />
-     
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
       {/* Create/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 md:p-10">
@@ -378,7 +463,7 @@ const { toasts, showToast, removeToast } = useToast();
                       onChange={handleChange}
                       placeholder="e.g., Premium Plan"
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all text-base"
-                      
+
                     />
                   </div>
 
@@ -390,7 +475,7 @@ const { toasts, showToast, removeToast } = useToast();
                       value={formData.duration}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none bg-white text-base cursor-pointer"
-                      
+
                     >
                       <option value="1 month">1 month</option>
                       <option value="2 months">2 months</option>
@@ -410,9 +495,11 @@ const { toasts, showToast, removeToast } = useToast();
                         name="priceMonthly"
                         value={formData.priceMonthly}
                         onChange={handleChange}
+                        // min={99}
+                        // max={999999}
                         placeholder="999.00"
                         className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-base"
-                    
+
                       />
                     </div>
                   </div>
@@ -432,7 +519,7 @@ const { toasts, showToast, removeToast } = useToast();
 
                   {/* Description */}
                   <div className="space-y-2 md:col-span-2">
-                    <label className="block text-sm font-bold text-gray-700">Description</label>
+                    <label className="block text-sm font-bold text-gray-700">Description <span className="text-red-500">*</span></label>
                     <textarea
                       name="description"
                       value={formData.description}
@@ -507,10 +594,26 @@ const { toasts, showToast, removeToast } = useToast();
                 </button>
                 <button
                   type="submit"
-                  disabled={isCreating}
-                  className="flex-[1.5] max-w-[180px] sm:w-auto sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm sm:text-base font-black rounded-lg sm:rounded-xl shadow-lg hover:shadow-orange-200 transition-all active:scale-95 cursor-pointer disabled:opacity-70"
+                  disabled={isCreating || isUpdating}
+                  className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white 
+  font-medium rounded-lg transition-all shadow-md cursor-pointer
+  flex items-center justify-center gap-2"
                 >
-                  {isCreating ? "Saving..." : isEditMode ? "Update Plan" : "Create Plan"}
+                  {isCreating ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></div>
+                      "Saving..."
+                    </>
+                  ) : isUpdating ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></div>
+                      "Updating..."
+                    </>
+                  ) : isEditMode ? (
+                    "Update Plan"
+                  ) : (
+                    "Create Plan"
+                  )}
                 </button>
               </div>
             </form>
@@ -549,7 +652,7 @@ const { toasts, showToast, removeToast } = useToast();
 
               <button
                 onClick={() => {
-                  setDeletingPlanId(deleteConfirm); 
+                  setDeletingPlanId(deleteConfirm);
                   dispatch(deletePlan(deleteConfirm)).finally(() => setDeletingPlanId(null));
                   setDeleteConfirm(null);
                   showToast({ action: "delete", message: "Plan deleted successfully..." });
@@ -565,12 +668,7 @@ const { toasts, showToast, removeToast } = useToast();
 
       {/* Plans List */}
       <div className="mt-12">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500 border-solid"></div>
-            <span className="ml-4 text-lg text-gray-600 font-medium">Loading plans...</span>
-          </div>
-        ) : error ? (
+        { error ? (
           <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-6 rounded-xl max-w-3xl mx-auto">
             <p className="font-medium">Error loading plans:</p>
             <p className="mt-1">{error}</p>
@@ -704,9 +802,8 @@ const { toasts, showToast, removeToast } = useToast();
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === i + 1 ? "bg-orange-600 text-white" : "bg-gray-100"
-              }`}
+              className={`px-4 py-2 rounded-lg ${currentPage === i + 1 ? "bg-orange-600 text-white" : "bg-gray-100"
+                }`}
             >
               {i + 1}
             </button>

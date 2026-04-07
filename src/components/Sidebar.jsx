@@ -335,7 +335,7 @@ export default function Sidebar({
 
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-6 py-5 border-b border-orange-200">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3 selected-card-title">
                 <FiLogOut className="w-6 h-6 text-orange-600" />
                 Confirm Logout
               </h3>

@@ -38,7 +38,7 @@ export function HelpSupport() {
     { icon: <HiOutlineBookOpen className="w-6 h-6" />, title: "Guides", bg: "bg-blue-50", color: "text-blue-600", iconBg: "bg-blue-100" },
     { icon: <BsPlayCircle className="w-6 h-6" />, title: "Tutorials", bg: "bg-purple-50", color: "text-purple-600", iconBg: "bg-purple-100" },
     { icon: <BsPeople className="w-6 h-6" />, title: "Community", bg: "bg-green-50", color: "text-green-600", iconBg: "bg-green-100" },
-    { icon: <BsCollection className="w-6 h-6" />, title: "Resources", bg: "bg-orange-50", color: "text-orange-600", iconBg: "bg-orange-100" },
+    { icon: <BsCollection className="w-6 h-6" />, title: "Resources",  color: "text-orange-600", iconBg: "bg-orange-100" },
   ];
 
   const contactCards = [
@@ -47,7 +47,6 @@ export function HelpSupport() {
       title: "Email Us",
       desc: "support@loanhub.com",
       sub: "Reply within 24 hours",
-      bg: "bg-orange-50",
       border: "border-orange-100",
     },
     {

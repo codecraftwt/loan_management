@@ -24,6 +24,11 @@ import { ActivityDetails } from './adminpages/ActivityDetails'
 
 
 function App() {
+
+
+  const toggleDarkMode = () => {
+  document.documentElement.classList.toggle("dark");
+};
   
 
   return (

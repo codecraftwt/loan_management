@@ -128,7 +128,7 @@ export function ActivityDetails() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8">
         {[
           { label: "Total", value: total, bg: "bg-white border border-gray-200", color: "text-gray-800", icon: <FiActivity className="w-5 h-5 text-gray-400" /> },
-          { label: "Created", value: created, bg: "bg-orange-50 border border-orange-100", color: "text-orange-600", icon: <GrAddCircle className="w-5 h-5 text-orange-400" /> },
+          { label: "Created", value: created, bg: "border border-orange-100", color: "text-orange-600", icon: <GrAddCircle className="w-5 h-5 text-orange-400" /> },
           { label: "Updated", value: updated, bg: "bg-blue-50 border border-blue-100", color: "text-blue-600", icon: <PiNotePencilDuotone className="w-5 h-5 text-blue-400" /> },
           { label: "Purchase", value: purchase, bg: "bg-green-50 border border-green-100", color: "text-green-600", icon: <MdOutlineLocalGroceryStore className="w-5 h-5 text-green-400" /> },
         ].map((s, i) => (

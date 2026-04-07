@@ -1,0 +1,93 @@
+/* GLOBAL FONT SYSTEM */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700;800;900&family=Sora:wght@300;400;500;600;700;800&display=swap');
+
+/* FONT VARIABLES */
+:root {
+  /*  Primary font — headings, titles  */
+  /* --font-heading: 'Poppins', sans-serif; */
+    --font-heading: 'Sora', sans-serif;
+
+  /* Body font- soft rounded — paragraphs, content, labels */
+  --font-body: 'Nunito', sans-serif;
+
+  /* UI font — buttons, badges, nav */
+  /* --font-ui: 'Inter', sans-serif; */
+    --font-ui: 'Poppins', sans-serif;
+
+  /* Mono font — code, IDs */
+  --font-mono: 'Courier New', monospace;
+}
+
+/* APPLY GLOBALLY */
+
+/* Body — default font */
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Buttons */
+button {
+  font-family: var(--font-ui);
+}
+
+/* Inputs, selects, textareas */
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+}
+
+/* Labels */
+label {
+  font-family: var(--font-body);
+}
+
+/* Nav links */
+nav a,
+nav button {
+  font-family: var(--font-ui);
+}
+
+/* Table */
+table,
+th,
+td {
+  font-family: var(--font-body);
+}
+
+/* Code / IDs */
+code,
+pre,
+[class*="font-mono"] {
+  font-family: var(--font-mono);
+}
+
+/* UTILITY CLASSES */
+
+.font-heading { font-family: var(--font-heading) !important; }
+.font-body    { font-family: var(--font-body)    !important; }
+.font-ui      { font-family: var(--font-ui)      !important; }
+.font-code    { font-family: var(--font-mono)    !important; }
+
+/* Separate page font style*/
+/* Revenue page */
+.revenue-page {
+    font-family: "Sora", sans-serif;
+}
+
+.plan-page * {
+    font-family: "Nunito", sans-serif;
+}

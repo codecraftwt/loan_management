@@ -316,7 +316,7 @@ export function ChangePassword() {
         <div className="space-y-6">
 
           {/* Requirements Card */}
-          <div className="bg-orange-50 rounded-2xl border border-orange-100 shadow-sm p-6">
+          <div className="rounded-2xl border border-orange-100 shadow-sm p-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="bg-white p-2 rounded-xl shadow-sm">
                 <LuInfo className="w-5 h-5 text-orange-500" />
@@ -340,7 +340,7 @@ export function ChangePassword() {
           {/* Need Help Card */}
           <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="bg-orange-50 p-2 rounded-xl">
+              <div className="p-2 rounded-xl">
                 <LuShieldCheck className="w-5 h-5 text-orange-500" />
               </div>
               <h3 className="text-sm font-bold text-gray-900">Need Help?</h3>

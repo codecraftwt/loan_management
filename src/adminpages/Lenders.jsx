@@ -136,7 +136,7 @@ export function Lenders() {
                         {/* Header: flex-shrink-0 taaki ye upar fix rahe */}
                         <div className="flex-shrink-0 flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
                             <div className="flex items-center gap-3">
-                                <h3 className="text-xl font-bold text-gray-900">Filters</h3>
+                                <h3 className="text-xl font-bold text-gray-900 selected-card-title">Filters</h3>
                             </div>
                             <button
                                 onClick={() => setIsFilterOpen(false)}

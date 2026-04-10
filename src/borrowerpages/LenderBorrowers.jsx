@@ -21,19 +21,19 @@ export function LenderBorrowers() {
     dispatch(fetchBorrowersByLender({ lenderId, page: currentPage, search, status: statusFilter }));
   }, [dispatch, lenderId, currentPage, search, statusFilter]);
 
-  const lender   = lenderBorrowers?.lender;
-  const summary  = lenderBorrowers?.summary;
+  const lender = lenderBorrowers?.lender;
+  const summary = lenderBorrowers?.summary;
   const borrowers = lenderBorrowers?.data || [];
 
   if (borrowersLoading) return (
-    <div className="flex justify-center items-center h-[60vh]">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500" />
-      <span className="ml-4 text-gray-600 font-medium">Loading borrowers...</span>
-    </div>
+     <div className="flex items-center justify-center h-[60vh] bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500 border-solid"></div>
+        <span className="ml-4 text-lg text-gray-600 font-medium">Loading borrowers...</span>
+      </div>
   );
 
   return (
-    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8">
 
       {/* Back */}
       <button onClick={() => navigate(-1)}
@@ -55,12 +55,12 @@ export function LenderBorrowers() {
       {summary && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {[
-            { label: "Unique Borrowers", value: summary.totalUniqueBorrowers,   color: "text-orange-600", bg: "bg-orange-50"  },
-            { label: "Total Loans",      value: summary.totalLoans,             color: "text-blue-600",   bg: "bg-blue-50"    },
-            { label: "Active Loans",     value: summary.activeLoans,            color: "text-green-600",  bg: "bg-green-50"   },
-            { label: "Overdue Loans",    value: summary.overdueLoans,           color: "text-red-500",    bg: "bg-red-50"     },
+            { label: "Unique Borrowers", value: summary.totalUniqueBorrowers,  color: "text-gray-900",   bg: "bg-white",       border: "border-fuchsia-100" },
+            { label: "Total Loans", value: summary.totalLoans, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-100" },
+            { label: "Active Loans", value: summary.activeLoans, color: "text-green-600", bg: "bg-green-50", border: "border-green-100" },
+            { label: "Overdue Loans", value: summary.overdueLoans, color: "text-red-500", bg: "bg-red-50", border: "border-red-100" },
           ].map((s, i) => (
-            <div key={i} className={`${s.bg} rounded-2xl p-4 border border-gray-100`}>
+            <div key={i} className={`${s.bg} rounded-2xl p-5 border border-gray-200`}>
               <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">{s.label}</p>
               <p className={`text-2xl font-black mt-1 ${s.color}`}>{s.value}</p>
             </div>
@@ -69,8 +69,7 @@ export function LenderBorrowers() {
       )}
 
       {/* Search + Filter */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="flex items-center gap-3 bg-white rounded-xl border border-orange-100 shadow-sm p-3 flex-1">
+       <div className="mb-6 flex items-center gap-3 bg-white rounded-xl border border-orange-100 shadow-sm p-3 max-w-4xl mx-auto">     
           <IoIosSearch className="w-4 h-4 text-gray-500 flex-shrink-0" />
           <input
             type="text"
@@ -79,7 +78,7 @@ export function LenderBorrowers() {
             placeholder="Search by borrower name or Aadhaar"
             className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
           />
-        </div>
+     
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
@@ -90,6 +89,7 @@ export function LenderBorrowers() {
           <option value="paid">Paid</option>
           <option value="overdue">Overdue</option>
         </select>
+     
       </div>
 
       {/* Borrowers list */}
@@ -103,7 +103,11 @@ export function LenderBorrowers() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {borrowers.map((borrower, i) => (
-            <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+            <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => navigate(
+                `/lenders/${lenderId}/borrowers/${borrower.borrowerId || borrower.aadhaarNumber}/details`,
+                { state: { borrower, lenderName: lender?.userName } }
+              )}>
 
               {/* Header */}
               <div className="flex items-start justify-between gap-3 mb-4">
@@ -133,13 +137,13 @@ export function LenderBorrowers() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-3 bg-orange-50/60 rounded-xl p-3 mb-4">
+              <div className="grid grid-cols-3 gap-3 bg-fuchsia-50 rounded-xl p-3 mb-4">
                 {[
-                  { label: "Total Loans",  value: borrower.totalLoansCount,                                             color: "text-gray-900"  },
-                  { label: "Total Amount", value: `₹${borrower.totalLoanAmount?.toLocaleString()}`,                     color: "text-orange-600" },
-                  { label: "Remaining",    value: `₹${borrower.totalRemainingAmount?.toLocaleString()}`,                color: "text-red-500"   },
+                  { label: "Total Loans", value: borrower.totalLoansCount, color: "text-gray-900" },
+                  { label: "Total Amount", value: `₹${borrower.totalLoanAmount?.toLocaleString()}`, color: "text-orange-600" },
+                  { label: "Remaining", value: `₹${borrower.totalRemainingAmount?.toLocaleString()}`, color: "text-red-500" },
                 ].map((s, i) => (
-                  <div key={i} className="text-center">
+                  <div key={i} className="text-center border border-gray-100">
                     <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wide">{s.label}</p>
                     <p className={`text-sm font-black ${s.color} mt-0.5`}>{s.value}</p>
                   </div>
@@ -154,12 +158,11 @@ export function LenderBorrowers() {
                     <span className="text-gray-600 font-medium">
                       ₹{loan.amount?.toLocaleString()}
                     </span>
-                    <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                      loan.paymentStatus === "paid"     ? "bg-green-100 text-green-700" :
-                      loan.paymentStatus === "overdue"  ? "bg-red-100 text-red-600"     :
-                      loan.paymentStatus === "part paid"? "bg-yellow-100 text-yellow-700":
-                                                          "bg-blue-100 text-blue-600"
-                    }`}>
+                    <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${loan.paymentStatus === "paid" ? "bg-green-100 text-green-700" :
+                        loan.paymentStatus === "overdue" ? "bg-red-100 text-red-600" :
+                          loan.paymentStatus === "part paid" ? "bg-yellow-100 text-yellow-700" :
+                            "bg-blue-100 text-blue-600"
+                      }`}>
                       {loan.paymentStatus}
                     </span>
                   </div>

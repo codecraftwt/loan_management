@@ -1,4 +1,4 @@
-// src/components/Navbar.jsx
+
 import { Link } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { useSelector, useDispatch } from "react-redux";
@@ -24,7 +24,7 @@ import { t } from "i18next";
 
 
 
-// ─── Toast Icons ─────────────────────────────────────────────
+//  Toast Icons 
 const ToastIcons = {
   success: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
@@ -162,10 +162,10 @@ export function Navbar({ toggleSidebar, isCollapsed }) {
   // Sync form with user data when modal opens
   useEffect(() => {
     if (isProfileModalOpen && user) {
-        let mobile = user.mobileNo || "";
+      let mobile = user.mobileNo || "";
 
-        //remove the country code
-        mobile = mobile.replace(/^\+91/, "").slice(-10);
+      //remove the country code
+      mobile = mobile.replace(/^\+91/, "").slice(-10);
 
       setEditForm({
         userName: user.userName || user.name || "",
@@ -281,7 +281,7 @@ export function Navbar({ toggleSidebar, isCollapsed }) {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
 
 
   return (
@@ -347,14 +347,17 @@ export function Navbar({ toggleSidebar, isCollapsed }) {
                 </span>
               </button>
 
-             <select
-  onChange={(e) => i18n.changeLanguage(e.target.value)}
-  className="border px-2 py-1 rounded"
->
-  <option value="en">English</option>
-  <option value="hi">Hindi</option>
-  <option value="mr">Marathi</option>
-</select>
+               
+              <select
+                onChange={(e) => i18n.changeLanguage(e.target.value)}
+                className="border px-2 py-1 rounded cursor-pointer"
+              >
+               
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="mr">Marathi</option>
+              </select>
+             
 
               {/* Logout */}
               <button onClick={() => setShowLogoutConfirm(true)} className="flex items-center gap-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 dark:hover:text-red-300 transition-colors focus:outline-none cursor-pointer">

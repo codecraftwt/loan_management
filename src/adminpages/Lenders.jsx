@@ -133,10 +133,10 @@ export function Lenders() {
             {/* Filter Modal */}
             {isFilterOpen && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    {/* Modal Container: flex-col aur max-h set kiya hai taaki screen se bahar na jaye */}
+                    {/* Modal Container: flex-col aur max-h  */}
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden border border-gray-100">
 
-                        {/* Header: flex-shrink-0 taaki ye upar fix rahe */}
+                        {/* Header: flex-shrink-0  */}
                         <div className="flex-shrink-0 flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
                             <div className="flex items-center gap-3">
                                 <h3 className="text-xl font-bold text-gray-900 selected-card-title">{t("filters")}</h3>
@@ -187,7 +187,7 @@ export function Lenders() {
                             </div>
                         </div>
 
-                        {/* Footer: flex-col (mobile pe) aur sm:flex-row (badi screen pe) */}
+                        {/* Footer: flex-col sm:flex-row */}
                         <div className="flex-shrink-0 flex flex-row items-center justify-center sm:justify-between gap-2.5 px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-200 bg-gray-50/70">
                             <button
                                 onClick={() => {
@@ -296,7 +296,7 @@ export function Lenders() {
                                     </h4>
                                     <div className="space-y-2 text-sm text-gray-700">
 
-                                        {/* Har row mein 'flex justify-between' hai taaki gap maintain rahe */}
+                                        {/* 'flex justify-between' */}
                                         <div className="flex justify-between">
                                             <span className="font-semibold text-sm text-gray-500">{t("plan")}</span>
                                             <span className=" text-gray-800 font-bold text-sm">{lender.currentPlan?.planName || "N/A"}</span>
@@ -395,6 +395,5 @@ export function Lenders() {
                 </div>
             )}
             </div>
-        
     );
 }

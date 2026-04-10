@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { data } from "react-router-dom";
 
 const BASE_URL = 'https://loan-backend-cv1k.onrender.com/api';
 
@@ -62,7 +63,7 @@ export const fetchLenderDetails = createAsyncThunk(
 );
 
 
-//fetched borrowers lender id wise
+//fetched lender id wise borrower
 
 export const fetchBorrowersByLender = createAsyncThunk(
   "lenders/fetchBorrowersByLender",
@@ -84,6 +85,34 @@ export const fetchBorrowersByLender = createAsyncThunk(
   }
 );
 
+// Fetch single borrower details page
+export const fetchBorrowerDetails = createAsyncThunk(
+  "lenders/fetchBorrowerDetails",
+  async (borrowerId, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token || localStorage.getItem('token');
+      if (!token) {
+        return rejectWithValue('No authentication token');
+      }
+
+      const res = await axios.get(
+        `${BASE_URL}/admin/borrowers/${borrowerId}/details`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.data?.success) {
+        throw new Error('Failed to fetch borrower details');
+      }
+
+      return res.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message || "Failed to fetch borrower details");
+    }
+  }
+);
+
 const initialState = {
   lenders: [],
   selectedLender: null,
@@ -92,9 +121,15 @@ const initialState = {
   error: null,
   lastFetched: null,
 
+  //lender wise borrower fetched state
   lenderBorrowers: null,
   borrowersLoading: false,
   borrowersError: null,
+
+  //borrower wise details fetched state
+  selectedBorrower: null,
+  borrowerDetailsLoading: false,
+  borrowerDetailsError: null,
 };
 
 const lendersSlice = createSlice({
@@ -139,7 +174,7 @@ const lendersSlice = createSlice({
         state.selectedLender = null;  
       })
 
-      //fetched borrowers by lender wise
+      //fetched lender wise borrower
       .addCase(fetchBorrowersByLender.pending, (state) => {
         state.borrowersLoading = true;
         state.borrowersError = null;
@@ -152,6 +187,21 @@ const lendersSlice = createSlice({
         state.borrowersLoading = false;
         state.borrowersError = action.payload;
       })
+
+      //fetched borrower wise details
+      .addCase(fetchBorrowerDetails.pending, (state) => {
+        state.borrowerDetailsLoading = true;
+        state.borrowerDetailsError = null;
+      })
+      .addCase(fetchBorrowerDetails.fulfilled, (state, action) => {
+        state.borrowerDetailsLoading = false;
+        state.selectedBorrower = action.payload;
+      })
+      .addCase(fetchBorrowerDetails.rejected, (state, action) => {
+        state.borrowerDetailsLoading = false;
+        state.borrowerDetailsError = action.payload;
+      })
+
       
   },
 });
